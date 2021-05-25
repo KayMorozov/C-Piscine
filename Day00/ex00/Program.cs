@@ -113,9 +113,8 @@ namespace Program
             double totalDebt;
             double percent;
             double overpayment;
-			int month;
-			
-			month = term;
+	    int month;
+	    month = term;
             numberOfMonth = 0;
             overpayment = 0;
             Console.WriteLine("\nДосрочное погашение с уменьшением суммы.\n");
@@ -134,7 +133,6 @@ namespace Program
                 {
                     sum -= payment;
                     annuityPayment = AnnuityPayment(sum, rate, (double) (term - selectedMonth));
-                    
                 }
                 if (sum < 0)
                     sum = 0;
@@ -159,9 +157,8 @@ namespace Program
             double totalDebt;
             double percent;
             double overpayment;
-			int month;
-			
-			month = term;
+	    int month;
+	    month = term;
             numberOfMonth = 0;
             overpayment = 0;
             Console.WriteLine("\nДосрочное погашение с уменьшением срока.\n");
@@ -180,7 +177,6 @@ namespace Program
                     sum -= payment;
                     month = CountMonth(annuityPayment, sum, rate) + 1;
                 }
-
                 if (sum < 0)
                     sum = 0;
                 Tail(lenString, numberOfMonth);
@@ -196,7 +192,6 @@ namespace Program
                 if (sum == 0)
                     break;
             }
-
             return (overpayment);
         }
         
@@ -227,7 +222,6 @@ namespace Program
                 Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
                 return ;
             }
-
             lenString = args[0].Length + 2;
             annuityPayment = AnnuityPayment(sum, rate, (double) term);
             overpaymentRTA = ReducingTheAmount(annuityPayment, selectedMonth, term, sum, rate, payment, lenString);
