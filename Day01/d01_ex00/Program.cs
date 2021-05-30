@@ -9,14 +9,12 @@ namespace d01_ex00
 {
     class Program
     {
-        static IEnumerable getValet(string mySum, string path)
+        static void ReadValet(List<string> valets, string path)
         {
-            List<string> valets;
             string currentDirName;
             FileInfo fi;
             string[] files;
 
-            valets = new List<string>();
             currentDirName = Directory.GetCurrentDirectory();
             files = Directory.GetFiles(currentDirName, $"{path}/*.txt");
             foreach (string s in files)
@@ -33,6 +31,10 @@ namespace d01_ex00
                 }
                 valets.Add(fi.Name.Substring(0, fi.Name.Length - 4));
             }
+        }
+
+        static IEnumerable getValet(string mySum, List<string>valets)
+        {
             foreach (string valet in valets)
             {
                 if (mySum != valet)
@@ -45,6 +47,8 @@ namespace d01_ex00
             string path;
             Exchanger exchanger;
             ExchangerSum mySum;
+            List<string> valets;
+
             CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
             if (args.Length > 2)
             {
@@ -59,13 +63,18 @@ namespace d01_ex00
                 Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
                 return;
             }
-            if (!(mySum.id == "RUB" || mySum.id == "USD" || mySum.id == "EUR") || mySum.sum == 0)
+            valets = new List<string>();
+            ReadValet(valets, path);
+            foreach(string valet in valets)
             {
-                Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
-                return;
+                if(mySum.id != valet)
+                {   
+                    Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
+                    return;
+                }
             }
             Console.WriteLine($"Сумма в исходной валюте: {mySum.sum:N2} {mySum.id}");
-            foreach(string valet in getValet(mySum.id, path))
+            foreach(string valet in getValet(mySum.id, valets))
             {
                 try
                 {
