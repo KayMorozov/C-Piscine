@@ -9,12 +9,14 @@ namespace d01_ex00
 {
     class Program
     {
-        static void ReadValet(List<string> valets, string path)
+        static List<string> ReadValet(string path)
         {
             string currentDirName;
             FileInfo fi;
             string[] files;
+            List<string> valets;
 
+            valets = new List<string>();
             currentDirName = Directory.GetCurrentDirectory();
             files = Directory.GetFiles(currentDirName, $"{path}/*.txt");
             foreach (string s in files)
@@ -31,6 +33,7 @@ namespace d01_ex00
                 }
                 valets.Add(fi.Name.Substring(0, fi.Name.Length - 4));
             }
+            return (valets);
         }
 
         static IEnumerable getValet(string mySum, List<string>valets)
@@ -63,15 +66,11 @@ namespace d01_ex00
                 Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
                 return;
             }
-            valets = new List<string>();
-            ReadValet(valets, path);
-            foreach(string valet in valets)
+            valets = ReadValet(path);
+            if (!valets.Contains(mySum.id))
             {
-                if(mySum.id != valet)
-                {   
-                    Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
-                    return;
-                }
+                Console.WriteLine("Ошибка ввода. Проверьте входные данные и повторите запрос.");
+                return;
             }
             Console.WriteLine($"Сумма в исходной валюте: {mySum.sum:N2} {mySum.id}");
             foreach(string valet in getValet(mySum.id, valets))
