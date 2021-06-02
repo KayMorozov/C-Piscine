@@ -29,5 +29,10 @@ namespace Model
         public MovieLink Link { get; set; }
 
         public string Url => Link.Url;
+
+        public override string ToString()
+        {
+            return $"- {Title}{(IsCriticsPick == 1 ? "[NYT critic’s pick]" : "")}\n{SummaryShort}\n{Url}";
+        }
     }
 }

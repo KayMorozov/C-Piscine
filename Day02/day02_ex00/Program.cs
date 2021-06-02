@@ -10,38 +10,62 @@ using Model;
 
 namespace day02_ex00
 {
-    public class Archive<N>
+    public class Archive<N> where N : ISearchable
     {
         [JsonPropertyName("results")] 
-        public object[] Items { get; set; }
+        public List<N> Items { get; set; }
 
-        public List<N> GetItemList()
+        public static IEnumerable<N> DeserializeFile(string jsonFile)
         {
-            List<N> itemList = new List<N>();
-            foreach (var item in Items)
-                itemList.Add(JsonSerializer.Deserialize<N>(item.ToString()));
-            return (itemList);
+            string jsonTxt = File.ReadAllText(jsonFile);
+            var item = JsonSerializer.Deserialize<Archive<N>>(jsonTxt);
+            return item?.Items;
         }
     }
 
     class Program
     {
+        static void PrintResult(IEnumerable<ISearchable> src, Media media)
+        {
+            IEnumerable<ISearchable> targetMedia = src.Where(t => t.MediaType == media);
+            if (!targetMedia.Any())
+                return;
+            Console.WriteLine($"\n{media} search result [{targetMedia.Count()}]");
+            Console.WriteLine(string.Join('\n', targetMedia.Select(t => t.ToString())));
+        }
+
         static void Main(string[] args)
         {
-            string needed;
+            string search;
             
             Console.WriteLine("Input search text:");
-            needed = Console.ReadLine();
+            search = Console.ReadLine();
             
             CultureInfo.CurrentCulture = new CultureInfo("en-US", false);
 
-            var books = JsonSerializer.Deserialize<Archive<Book>>(File.ReadAllText("book_reviews.json"));
-            List<Book> bookList = new List<Book>();
-            bookList = books.GetItemList();
+            List<ISearchable> archive = new List<ISearchable>();
 
-            var movies = JsonSerializer.Deserialize<Archive<Movie>>(File.ReadAllText("movie_reviews.json"));
-            List<Movie> movieList = new List<Movie>();
-            movieList = movies.GetItemList();
+            try 
+            { 
+                archive.AddRange(Archive<Book>.DeserializeFile("book_reviews.json"));
+                archive.AddRange(Archive<Movie>.DeserializeFile("movie_reviews.json"));
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            StringComparison comp = StringComparison.OrdinalIgnoreCase;
+            var serchItems = archive.Where(t => t.Title.Contains(search, comp));
+
+            if (!serchItems.Any())
+            { 
+                Console.WriteLine($"There are no \"{search}\" in media today.");
+                return;
+            }
+            Console.WriteLine($"\nItems found: {serchItems.Count()}");
+            PrintResult(serchItems, Media.Book);
+            PrintResult(serchItems, Media.Movie);
         }
     }
 }

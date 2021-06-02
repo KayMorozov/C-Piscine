@@ -38,5 +38,10 @@ namespace Model
         public string Author => BookDetails[0].Author;
         
         public string SummaryShort => BookDetails[0].SummaryShort;
+
+        public override string ToString()
+        {
+            return $"- {Title} by {Author} [{Rank} on NYT’s {ListName}]\n{SummaryShort}\n{Url}";
+        }
     }
 }
